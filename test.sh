@@ -148,7 +148,7 @@ function check_params() {
 
 #################### log ####################
 
-loglevel=0 #debug:0; info:1; warn:2; error:3
+loglevel=0 #DEBUG:0; INFO:1; WARNING:2; ERROR:3
 
 function log {
     local msg;local logtype
@@ -157,17 +157,17 @@ function log {
     datetime=`date +'%F %H:%M:%S'`
     #使用内置变量$LINENO不行，不能显示调用那一行行号
     #logformat="[${logtype}]\t${datetime}\tfuncname:${FUNCNAME[@]} [line:$LINENO]\t${msg}"
-    logformat="[${logtype}]\t${datetime}\tfuncname: ${FUNCNAME[@]/log/}\t[line:`caller 0 | awk '{print$1}'`]\t${msg}"
-    #funname格式为log error main,如何取中间的error字段，去掉log好办，再去掉main,用echo awk? ${FUNCNAME[0]}不能满足多层函数嵌套
+    logformat="[${logtype}] ${datetime} [${FUNCNAME[@]/log/}:line:`caller 0 | awk '{print$1}'` ] ${msg}"
+    #funname格式为log ERROR main,如何取中间的ERROR字段，去掉log好办，再去掉main,用echo awk? ${FUNCNAME[0]}不能满足多层函数嵌套
     {
     case $logtype in
-        debug)
+        DEBUG)
             [[ $loglevel -le 0 ]] && echo -e "\033[30m${logformat}\033[0m" ;;
-        info)
+        INFO)
             [[ $loglevel -le 1 ]] && echo -e "\033[32m${logformat}\033[0m" ;;
-        warn)
+        WARNING)
             [[ $loglevel -le 2 ]] && echo -e "\033[33m${logformat}\033[0m" ;;
-        error)
+        ERROR)
             [[ $loglevel -le 3 ]] && echo -e "\033[31m${logformat}\033[0m" ;;
     esac
     } | tee -a $LOGFILE
@@ -176,39 +176,39 @@ function log {
 #################### sysbench cmd ####################
 
 function prepare() {
-log info "===========prepare begin============"
+log INFO "===========prepare begin============"
 
-log info "${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e\"drop database if exists $TEST_DB\""
+log INFO "${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e\"drop database if exists $TEST_DB\""
 ${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e"drop database if exists $TEST_DB" | tee -a $LOGFILE
 
-log info "${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e\"create database $TEST_DB\""
+log INFO "${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e\"create database $TEST_DB\""
 ${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e"create database $TEST_DB" | tee -a $LOGFILE
 
 cmd="${SYSBENCH_PATH} $SCRIPT --mysql-db=$TEST_DB --mysql-user=$USER --mysql-password=$PASSWD --mysql-host=$HOST --mysql-port=$PORT --report-interval=10 --time=$TIME --threads=$THREAD prepare"
-log info $cmd
+log INFO $cmd
 ${cmd} | tee -a $LOGFILE
 
-log info "===========prepare end============"
+log INFO "===========prepare end============"
 }
 
 function run() {
-log info "===========run begin============"
+log INFO "===========run begin============"
 
 cmd="${SYSBENCH_PATH} $SCRIPT --mysql-db=$TEST_DB --mysql-user=$USER --mysql-password=$PASSWD --mysql-host=$HOST --mysql-port=$PORT --report-interval=10 --time=$TIME --threads=$THREAD run"
-log info $cmd
+log INFO $cmd
 ${cmd} | tee -a $LOGFILE
 
-log info "===========run end============"
+log INFO "===========run end============"
 }
 
 function cleanup() {
-log info "===========cleanup begin============"
+log INFO "===========cleanup begin============"
 
 cmd="${SYSBENCH_PATH} $SCRIPT --mysql-db=$TEST_DB --mysql-user=$USER --mysql-password=$PASSWD --mysql-host=$HOST --mysql-port=$PORT --report-interval=10 --time=$TIME --threads=$THREAD cleanup"
-log info $cmd
+log INFO $cmd
 ${cmd} | tee -a $LOGFILE
 
-log info "===========cleanup end============"
+log INFO "===========cleanup end============"
 }
 
 #################### main ####################
@@ -225,7 +225,7 @@ fi
 parse_params $@
 check_params
 
-log info "user=$USER, passwd=$PASSWD, host=$HOST, port=$PORT, time=$TIME, threads=$THREAD, logfile=$LOGFILE, needresetlog=$NEEDRESET, cmd=$CMD, script=$SCRIPT"
+log INFO "user=$USER, passwd=$PASSWD, host=$HOST, port=$PORT, time=$TIME, threads=$THREAD, logfile=$LOGFILE, needresetlog=$NEEDRESET, cmd=$CMD, script=$SCRIPT"
 
 if [ $CMD == "prepare" ] || [ $CMD == "all" ] ; then
     prepare
