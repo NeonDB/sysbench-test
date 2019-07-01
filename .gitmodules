@@ -1,3 +1,3 @@
 [submodule "sysbench"]
 	path = sysbench
-	url = https://github.com/NeonDB/sysbench.git
+	url = https://github.com/XDBLabs/sysbench.git
