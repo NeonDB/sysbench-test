@@ -7,7 +7,7 @@ instruction guide：
 ```bash
 ./build_sysbench.sh
 
-# all 包括prepare、run、cleanup，也可单独指定某一步
+# --cmd=all includes prepare, run, cleanup
 ./test.sh -uadmin -padmin -h192.168.0.247 -t 10 -T 5 -l /tmp/sysbench.log -s ./sysbench_install/share/sysbench/oltp_read_write.lua -c all 
 ```
 
