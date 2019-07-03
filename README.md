@@ -1,8 +1,8 @@
 # sysbench-test
 
-有的同学刚接触sysbench，不太懂得如何使用，也想不到将输出重定向到文件，为了避免这种情况，特创建本项目。
+This project was created to avoid beginners who don't know how to use sysbench or redirect output to a file.
 
-使用方法：
+instruction guide：
 
 ```bash
 ./build_sysbench.sh
@@ -11,7 +11,7 @@
 ./test.sh -uadmin -padmin -h192.168.0.247 -t 10 -T 5 -l /tmp/sysbench.log -s ./sysbench_install/share/sysbench/oltp_read_write.lua -c all 
 ```
 
-本脚本可以做到同时将日志输出到终端与logfile中。日志输出示例如下：
+This script can output the log to both terminal and logfile. Examples are as follows:
 
 ```prolog
 [INFO] 2019-06-20 17:07:38 [ main:line:228 ] user=admin, passwd=admin, host=192.168.0.247, port=3306, time=10, threads=5, logfile=/tmp/sysbench.log, needresetlog=false, cmd=all, script=./sysbench_install/share/sysbench/oltp_read_write.lua
